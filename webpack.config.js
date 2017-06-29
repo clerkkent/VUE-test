@@ -2,13 +2,14 @@ var webpack = require("webpack");
 var path = require("path");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var OptimizeCSSPlugin = require("optimize-css-assets-webpack-plugin");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var argv = require("yargs").argv; //命令行参数解析
 var isPro = argv.env.trim() === 'production' ////解析到命令行内有prodiction字段
 
 function resolve(dir) { //拼接为绝对路径用
-    return path.resolve(_dirname, dir);
+    return path.resolve(__dirname, dir);
 }
-var needHand = [resolce("src"), resolve('node_modules/vuex'), resolve('node_modules/jquery'), resolve('vue-resource')]
+var needHand = [resolve("src"), resolve('node_modules/vuex'), resolve('node_modules/jquery'), resolve('vue-resource')]
 var plugins = [
     new webpack.DefinePlugin({ ////去除对warning和一些提示信息的代码
         'process.env': {
@@ -16,7 +17,7 @@ var plugins = [
         }
     }),
     new webpack.BannerPlugin("This file is created by xiixi"),
-    new ExTractTextPlugin({
+    new ExtractTextPlugin({
         filename: isPro ? 'css/[name].[contenthash].css' : '[name].[contenthash].css',
         allChunks: true
     }),
@@ -79,54 +80,86 @@ module.exports = {
     },
     module: {
         rules: [{ //代码检查
-            test: /\.(js|vue)$/,
-            use: 'eslint-loader',
-            enforce: 'pre',
-            include: [resolve('src')],
-            exclude: [/(node_module)/]
-        }, {
-            test: /\.vue$/,
-            loader: 'vue-loader',
-            option: {
-                loaders: {
-                    sass: ExTractTextPlugin.extract({
-                        fallback: 'vue-style-loader',
-                        use: [{
-                            loader: 'css-loader'
-                        }, {
+                test: /\.(js|vue)$/,
+                use: 'eslint-loader',
+                enforce: 'pre',
+                include: [resolve('src')],
+                exclude: [/(node_module)/]
+            }, {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+                options: {
+                    loaders: {
+                        sass: ExtractTextPlugin.extract({
+                            fallback: 'vue-style-loader',
+                            use: [{
+                                loader: 'css-loader'
+                            }, {
+                                loader: 'sass-loader',
+                                option: {
+                                    indentedSyntax: true
+                                }
+                            }]
+                        })
+                    }
+                }
+            }, {
+                test: /\.sass$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: [
+                        'css-loader',
+                        'postcss-loader',
+                        {
                             loader: 'sass-loader',
-                            option: {
+                            options: {
                                 indentedSyntax: true
                             }
-                        }]
-                    })
+                        }
+                    ]
+                })
+            }, {
+                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    name: isPro ? 'imgs/[name].[hash:7].[ext]' : '[name].[hash:7].[ext]'
+                }
+            },
+            {
+                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    name: isPro ? 'fonts/[name].[hash:7].[ext]' : '[name].[hash:7].[ext]'
                 }
             }
-        }, {
-            test: /\.sass$/,
-            use: ExTractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: [
-                    'css-loader',
-                    'postcss-loader',
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            indentedSyntax: true
-                        }
-                    }
-                ]
-            })
-        }, {
-            test: /\.css$/,
-            use: ExTractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: [
-                    'css-loader'
-                ]
-            })
-        }, {
-            test: /\.(png|jpe?g|gif)/
-        }]
-    }
+        ]
+    },
+    devServer: {
+        contentBase: "dist",
+        //热替换的区别就在于，当前端代码变动时，无需刷新整个页面，只把变化的部分替换掉。
+        //自动刷新整个页面刷新
+        inline: true,
+        //stats(string or object) errors-only|minimal|none|normal|verbose(输出所有)
+        stats: {
+            //context: "./src/",
+            //assets: true,
+            colors: true,
+            errors: true
+        },
+        // 启用gzip压缩一切服务:
+        // compress: true,
+        host: "0.0.0.0",
+        // host: "192.168.10.75",
+        port: "3001"
+    },
+    resolve: {
+        extensions: ['.vue', '.js', '.css', '.sass', '.scss'],
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js',
+        }
+    },
+    plugins: plugins,
+    devtool: isPro ? '#source-map' : '#cheap-module-eval-source-map'
 }

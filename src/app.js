@@ -1,2 +1,5 @@
-import Vue from "vue"
-import router form "./router"
+import Vue from 'vue'
+import router from './router'
+new Vue({
+    router
+}).$mount('#root')
