@@ -4,9 +4,9 @@
     </div>
 </template>
 <script>
-    import bus from '../bus'
-    export default{
-        props:{
+import bus from '../bus'
+export default{
+props:{
             id:{
                 type:Number
             }

@@ -12,7 +12,7 @@ const routerConfig = {
     },
     routes: [
         { path: '/', name: 'index', props: { name: 'name' }, component: Index },
-        { path: '/', name: 'second', props: { name: 'name' }, component: Second }
+        { path: '/second', name: 'second', props: { name: 'name' }, component: Second }
     ]
 }
 const router = new VueRouter(routerConfig)

@@ -5,6 +5,10 @@ var OptimizeCSSPlugin = require("optimize-css-assets-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var argv = require("yargs").argv; //命令行参数解析
 var isPro = argv.env.trim() === 'production' ////解析到命令行内有prodiction字段
+var OpenBrowserPlugin = require('open-browser-webpack-plugin');
+os = require('os');
+console.log("xx" + os.hostname());
+var ip = "192.168.10.92"
 
 function resolve(dir) { //拼接为绝对路径用
     return path.resolve(__dirname, dir);
@@ -79,13 +83,7 @@ module.exports = {
         chunkFilename: isPro ? "js/[name].[chunkhash].js" : "[name].[chunkhash].js" //异步按需加载所需
     },
     module: {
-        rules: [{ //代码检查
-                test: /\.(js|vue)$/,
-                use: 'eslint-loader',
-                enforce: 'pre',
-                include: [resolve('src')],
-                exclude: [/(node_module)/]
-            }, {
+        rules: [{
                 test: /\.vue$/,
                 loader: 'vue-loader',
                 options: {
@@ -150,8 +148,8 @@ module.exports = {
         },
         // 启用gzip压缩一切服务:
         // compress: true,
-        host: "0.0.0.0",
-        // host: "192.168.10.75",
+        // host: "192.168.10.92",
+        host: "192.168.10.92",
         port: "3001"
     },
     resolve: {
