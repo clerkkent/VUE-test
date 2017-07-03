@@ -6,8 +6,6 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var argv = require("yargs").argv; //命令行参数解析
 var isPro = argv.env.trim() === 'production' ////解析到命令行内有prodiction字段
 var OpenBrowserPlugin = require('open-browser-webpack-plugin');
-os = require('os');
-console.log("xx" + os.hostname());
 var ip = "192.168.10.92"
 
 function resolve(dir) { //拼接为绝对路径用
@@ -149,7 +147,7 @@ module.exports = {
         // 启用gzip压缩一切服务:
         // compress: true,
         // host: "192.168.10.92",
-        host: "192.168.10.92",
+        host: "192.168.10.125",
         port: "3001"
     },
     resolve: {

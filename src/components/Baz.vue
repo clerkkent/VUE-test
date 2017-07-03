@@ -27,7 +27,7 @@ export default{
     methods:{
         dosomething (){
             this.content="混合"
-            router.push({ path: '/second' , query: { userId: 123 }})//栈导航 显性传参可改为name隐形传参
+            router.push({ path: '/second' })//栈导航
         }
     },
     computed: {
@@ -39,6 +39,6 @@ export default{
 </script>
 <style lang="sass" scoped>
      .first{
-         background:red;
+         background:#015654;
      }
 </style>
