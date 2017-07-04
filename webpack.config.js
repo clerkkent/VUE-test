@@ -147,7 +147,7 @@ module.exports = {
         // 启用gzip压缩一切服务:
         // compress: true,
         // host: "192.168.10.92",
-        host: "192.168.10.125",
+        host: "192.168.10.162",
         port: "3001"
     },
     resolve: {

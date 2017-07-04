@@ -23,7 +23,7 @@
             }
         },
         mounted () {
-             console.log(this.$route);  
+             
          },
         ready: function(){   
             console.log('deviceid: ' + this.$route.params.userId);  

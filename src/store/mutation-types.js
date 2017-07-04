@@ -1,0 +1,1 @@
+export const Index_Info = 'Index_Info'

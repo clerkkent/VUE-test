@@ -8,9 +8,11 @@ const store = new Vuex.Store({
     mutations: {
         increment(state) {
             state.count++
+        },
+        reduce(state) {
+            state.count = 100
         }
     }
 })
-store.commit('increment')
-console.log(store.state.count) // -> 1
+store.commit('reduce')
 export default store
