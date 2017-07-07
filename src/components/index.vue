@@ -32,9 +32,10 @@ export default{
     },
     computed: {
             count () {
-            return store.state.count
+            return this.$store.state
         }
     }
+    
     }    
 </script>
 <style lang="sass" scoped>

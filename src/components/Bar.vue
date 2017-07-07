@@ -32,7 +32,7 @@ export default{
     },
     computed: {
             count () {
-            return store.state.count
+            return store.state
         }
     }
     }    
