@@ -6,7 +6,20 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var argv = require("yargs").argv; //命令行参数解析
 var isPro = argv.env.trim() === 'production' ////解析到命令行内有prodiction字段
 var OpenBrowserPlugin = require('open-browser-webpack-plugin');
-var ip = "192.168.10.92"
+
+function getIPAdress() {
+    var interfaces = require('os').networkInterfaces();
+    for (var devName in interfaces) {
+        var iface = interfaces[devName];
+        for (var i = 0; i < iface.length; i++) {
+            var alias = iface[i];
+            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
+                return alias.address;
+            }
+        }
+    }
+}
+var ip = getIPAdress();
 
 function resolve(dir) { //拼接为绝对路径用
     return path.resolve(__dirname, dir);
@@ -51,7 +64,8 @@ var plugins = [
     new webpack.optimize.CommonsChunkPlugin({
         name: "mainfest",
         chunk: ["vender"]
-    })
+    }),
+    new OpenBrowserPlugin({ url: 'http:' + ip + ':3001' })
 
 ];
 
@@ -100,7 +114,7 @@ module.exports = {
                     }
                 }
             }, {
-                test: /\.sass$/,
+                test: /\.(sass)$/,
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
                     use: [
@@ -129,6 +143,12 @@ module.exports = {
                     limit: 10000,
                     name: isPro ? 'fonts/[name].[hash:7].[ext]' : '[name].[hash:7].[ext]'
                 }
+            }, {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: ['css-loader', 'postcss-loader']
+                })
             }
         ]
     },
@@ -147,8 +167,16 @@ module.exports = {
         // 启用gzip压缩一切服务:
         // compress: true,
         // host: "192.168.10.92",
-        host: "192.168.10.162",
-        port: "3001"
+        host: ip,
+        port: "3001",
+        proxy: {
+            // 请求到 '/device' 下 的请求都会被代理到 target： http://debug.xxx.com 中
+            '/toutiao/*': {
+                target: 'http://v.juhe.cn',
+                secure: false, // 接受 运行在 https 上的服务
+                changeOrigin: true
+            }
+        }
     },
     resolve: {
         extensions: ['.vue', '.js', '.css', '.sass', '.scss'],

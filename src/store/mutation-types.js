@@ -1,1 +1,2 @@
-export const Index_Info = 'Index_Info'
+export const INDEXINFO = 'INDEXINFO'
+export const HIDEPOPUM = 'HIDEPOPUM'

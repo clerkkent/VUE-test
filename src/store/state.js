@@ -18,5 +18,5 @@ const store = new Vuex.Store({
         index
     }
 })
-store.commit('Index_Info')
+
 export default store
